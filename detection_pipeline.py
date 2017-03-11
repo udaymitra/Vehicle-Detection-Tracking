@@ -68,10 +68,10 @@ def detect_vehicles(image, svm, X_scaler, showheatmap=False, holder=None, debug=
         count = holder.iteration
 
     hot_windows = gethotwindows(image, svm, X_scaler, previous=previousLabels, count=count)
+    window_img_init = None
     if debug:
         window_img_init = draw_boxes(draw_image, hot_windows)
-        plt.imshow(window_img_init)
-        plt.show()
+
     heat = np.zeros_like(image[:, :, 0]).astype(np.float)
     heatmap = add_heat(heatmap=heat, bbox_list=hot_windows)
 
@@ -103,7 +103,7 @@ def detect_vehicles(image, svm, X_scaler, showheatmap=False, holder=None, debug=
     # window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
     window_img = draw_labeled_bboxes(draw_image, labels)
     # print("Showing output")
-    return window_img, averageHeatMap
+    return window_img, window_img_init, averageHeatMap
 
 
 class ImageHolder:
@@ -120,7 +120,7 @@ X_scaler = pickle.load(open("scalar.pkl", "rb"))
 svm = pickle.load(open("svm.pkl", "rb"))
 
 def finalProcessImg(image):
-    img,holder = detect_vehicles(image, svm, X_scaler, holder=imageHolder)
+    img, _, holder = detect_vehicles(image, svm, X_scaler, holder=imageHolder)
     return img
 
 ### for report
@@ -131,7 +131,7 @@ def process_test_images():
         feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
         plt.imshow(feature_image)
         # plt.show()
-        window_img, heatmap = detect_vehicles(image, svm, X_scaler, debug=False)
+        window_img, windows_detected, heatmap = detect_vehicles(image, svm, X_scaler, debug=False)
         # plt.imshow(window_img)
         # plt.show()
         # plt.imshow(heatmap)
