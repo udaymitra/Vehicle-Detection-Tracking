@@ -20,11 +20,15 @@ spatial_feat = CONFIG['spatial_feat']
 hist_feat = CONFIG['hist_feat']
 hog_feat = CONFIG['hog_feat']
 
-def gethotwindows(image, svm, X_scaler, previous=None, count=0):
+def get_sliding_windows_for_search(image):
     windows = slide_window(image, x_start_stop=[None, None], y_start_stop=[400, 500],
                            xy_window=(96, 96), xy_overlap=(0.75, 0.75))
     windows += slide_window(image, x_start_stop=[None, None], y_start_stop=[425, image.shape[0]],
                             xy_window=(128, 128), xy_overlap=(0.75, 0.75))
+    return windows
+
+def gethotwindows(image, svm, X_scaler, previous=None, count=0):
+    windows = get_sliding_windows_for_search(image)
 
     hot_windows = search_windows(image, windows, svm, X_scaler, color_space=color_space,
                                  spatial_size=spatial_size, hist_bins=hist_bins,
