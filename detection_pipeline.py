@@ -119,22 +119,30 @@ def finalProcessImg(image):
     img,holder = detect_vehicles(image, svm, X_scaler, holder=imageHolder)
     return img
 
-# images = glob.glob("test_images/*")
-# for file in [images[0]]:
-#     image = mpimg.imread(file)
-#     feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
-#     plt.imshow(feature_image)
-#     # plt.show()
-#     window_img, heatmap = detect_vehicles(image, svm, X_scaler, debug=False)
-#     # plt.imshow(window_img)
-#     # plt.show()
-#     # plt.imshow(heatmap)
-#     # plt.show()
+### for report
+def process_test_images():
+    images = glob.glob("test_images/*")
+    for file in [images[0]]:
+        image = mpimg.imread(file)
+        feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
+        plt.imshow(feature_image)
+        # plt.show()
+        window_img, heatmap = detect_vehicles(image, svm, X_scaler, debug=False)
+        # plt.imshow(window_img)
+        # plt.show()
+        # plt.imshow(heatmap)
+        # plt.show()
 
+def process_video():
+    from moviepy.editor import VideoFileClip
 
-from moviepy.editor import VideoFileClip
+    output = 'project_video_output.mp4'
+    clip = VideoFileClip("project_video.mp4")
+    output_clip = clip.fl_image(finalProcessImg)
+    output_clip.write_videofile(output, audio=False)
 
-output = 'project_video_output.mp4'
-clip = VideoFileClip("project_video.mp4")
-output_clip = clip.fl_image(finalProcessImg) #NOTE: this function expects color images!!
-output_clip.write_videofile(output, audio=False)
+def main():
+    process_video()
+
+if __name__ == "__main__":
+    main()
