@@ -134,7 +134,7 @@ def finalProcessImg(image):
 
 from moviepy.editor import VideoFileClip
 
-output = 'test_video_debug.mp4'
-clip = VideoFileClip("test_video.mp4")
+output = 'project_video_output.mp4'
+clip = VideoFileClip("project_video.mp4")
 output_clip = clip.fl_image(finalProcessImg) #NOTE: this function expects color images!!
 output_clip.write_videofile(output, audio=False)
