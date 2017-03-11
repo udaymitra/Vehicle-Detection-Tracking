@@ -79,6 +79,7 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
     return on_windows
 
 
+# METHOD NOT WORKING LIKE EXPECTED
 def search_windows_fast(img, y_start, y_stop, clf, scaler, scale=1,
                         spatial_size=(32, 32), hist_bins=32,
                         orient=9,

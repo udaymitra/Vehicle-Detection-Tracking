@@ -21,34 +21,9 @@ hist_feat = CONFIG['hist_feat']
 hog_feat = CONFIG['hog_feat']
 
 def gethotwindows(image, svm, X_scaler, previous=None, count=0):
-    y_start_stop = [int(image.shape[0] / 2), image.shape[0]]  # Min and max in y to search in slide_window()
-
-    xmin = None
-    xmax = None
-    if count % 2 != 0:
-        if previous is not None:
-            for car_number in range(1, previous[1] + 1):
-                nonzero = (previous[0] == car_number).nonzero()
-                nonzerox = np.array(nonzero[1])
-                if xmin is None:
-                    xmin = np.min(nonzerox)
-                else:
-                    xmin = min(np.min(nonzerox), xmin)
-                if xmax is None:
-                    xmax = np.max(nonzerox)
-                else:
-                    xmax = max(np.max(nonzerox), xmax)
-
-    if xmin is not None and xmin > 50:
-        xmin = xmin - 50
-    if xmax is not None and xmax + 50 < image.shape[1]:
-        xmax = xmax + 50
-
-    x_start_stop = [xmin, xmax]
-
-    windows = slide_window(image, x_start_stop=x_start_stop, y_start_stop=[400, 500],
+    windows = slide_window(image, x_start_stop=[None, None], y_start_stop=[400, 500],
                            xy_window=(96, 96), xy_overlap=(0.75, 0.75))
-    windows += slide_window(image, x_start_stop=x_start_stop, y_start_stop=[425, image.shape[0]],
+    windows += slide_window(image, x_start_stop=[None, None], y_start_stop=[425, image.shape[0]],
                             xy_window=(128, 128), xy_overlap=(0.75, 0.75))
 
     hot_windows = search_windows(image, windows, svm, X_scaler, color_space=color_space,
@@ -76,13 +51,11 @@ def gethotwindows(image, svm, X_scaler, previous=None, count=0):
 
 
 def detect_vehicles(image, svm, X_scaler, showheatmap=False, holder=None, debug=False):
-    # image = mpimg.imread('test_images/test2.jpg')
     # Uncomment the following line if you extracted training
     # data from .png images (scaled 0 to 1 by mpimg) and the
     # image you are searching is a .jpg (scaled 0 to 255)
     draw_image = np.copy(image)
     image = image.astype(np.float32) / 255
-    # print(image.shape)
 
     count = 0
     previousLabels = None
