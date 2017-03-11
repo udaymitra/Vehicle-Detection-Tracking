@@ -20,7 +20,6 @@ def overlapping(box1,box2):
 
 def draw_labeled_bboxes(img, labels):
     # Iterate through all detected cars
-
     filterd_boxes = []
 
     for car_number in range(1, labels[1] + 1):
@@ -29,14 +28,12 @@ def draw_labeled_bboxes(img, labels):
         # Identify x and y values of those pixels
         nonzeroy = np.array(nonzero[0])
         nonzerox = np.array(nonzero[1])
-        # Define a bounding box based on min/max x and y
-        # bbox = ((np.min(nonzerox), np.min(nonzeroy)), (np.max(nonzerox), np.max(nonzeroy)))
-        # cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+
+        # min length 10 pixels on both X and Y
         if abs(np.min(nonzerox) - np.max(nonzerox)) > 10 and abs(np.min(nonzeroy) - np.max(nonzeroy)) > 10:
             filterd_boxes.append([np.min(nonzerox), np.min(nonzeroy), np.max(nonzerox), np.max(nonzeroy)])
-            # Draw the box on the image
 
-    final_values = []
+    # split overlapping windows
     for i in filterd_boxes:
         final_value = i
         for j in filterd_boxes:
